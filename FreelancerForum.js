@@ -20,17 +20,24 @@ let newPriceAvg;
 let avgPrint;
 let entryPrint;
 let addPrint;
-let amountOfNew = 0;
 let body;
+let myInterval;
+
+// this function calculates the average price of a set of objects
+function avgCalc(setOfObj) {
+    newPriceSum = setOfObj.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.price;
+    }, 0);
+
+    return Math.round(newPriceSum/(setOfObj.length));
+}
 
 // this function prints initial freelancers and average price at top
 function initialPrint(initialInfo) {
 
-    // calculates initial average price
-    newPriceSum = initialInfo.reduce((accumulator, currentValue) => {
-        return accumulator + currentValue.price;
-    }, 0);
-    newPriceAvg = Math.round(newPriceSum/(initialInfo.length));
+    /* this var assignment has to be in here because I want to have
+    a global var for later, the way I set things up for my code*/
+    newPriceAvg = avgCalc(initialInfo);
 
     // prints initial average price
     body = document.querySelector("body");
@@ -58,13 +65,12 @@ function generateAndPrint(initial, bank) {
     const newFL = bank[randIndex];
     bank.splice(randIndex, 1);
 
-    /* remembers how many new freelancers have been added so it can
-    increase the divisor when calculating the average */
-    amountOfNew++;
+    // this pushes the new freelancer into the initial array
+    initial.push(newFL);
 
     // calculates new average price
     newPriceSum = newPriceSum + newFL.price;
-    newPriceAvg = Math.round(newPriceSum/(initial.length + amountOfNew));
+    newPriceAvg = Math.round(newPriceSum/(initial.length));
 
     // updates average price on screen
     avgPrint.textContent = "Average Price: " + newPriceAvg;
@@ -76,9 +82,16 @@ function generateAndPrint(initial, bank) {
     body.append(addPrint);
 }
 
+function generateAndPrintOverTime(currentOT, backLogOT) {
+    if (backLogOT) {
+        generateAndPrint(currentOT, backLogOT);
+    } else {
+        clearInterval(myInterval);
+    }
+}
 
-// still need final code where functions are called
+
+//final code where functions are called
 
 initialPrint(currentFLs);
-generateAndPrint(currentFLs, backLogFLs);
-
+myInterval = setInterval(generateAndPrintOverTime, 2000, currentFLs, backLogFLs);
