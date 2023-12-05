@@ -82,6 +82,7 @@ function generateAndPrint(initial, bank) {
     body.append(addPrint);
 }
 
+// this function stops the eventual interval if the backlog is empty
 function generateAndPrintOverTime(currentOT, backLogOT) {
     if (backLogOT) {
         generateAndPrint(currentOT, backLogOT);
@@ -90,8 +91,6 @@ function generateAndPrintOverTime(currentOT, backLogOT) {
     }
 }
 
-
 //final code where functions are called
-
 initialPrint(currentFLs);
 myInterval = setInterval(generateAndPrintOverTime, 2000, currentFLs, backLogFLs);
